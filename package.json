@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "crypto-js": "^3.1.9-1",
     "express": "^4.15.3",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
@@ -20,6 +21,11 @@
   "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
   "main": "index.js",
   "devDependencies": {
+    "eslint": "^4.3.0",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.1.0",
     "react-toolbox-themr": "^1.0.2"
   },
   "author": "",
