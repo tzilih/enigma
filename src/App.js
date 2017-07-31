@@ -7,7 +7,6 @@ import Button from 'react-toolbox/lib/button/Button';
 import DatePicker from 'react-toolbox/lib/date_picker/DatePicker';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
-import Encrypt from "./Encrypt";
 
 class App extends Component {
   state = { name: '', message: '', active: false, encryptedMessage: '', expDate: '', errorMessage: ''};
@@ -22,7 +21,6 @@ class App extends Component {
   }
 
   handleEncrypt = () => {
-    // TODO - use rest or spread operators to assign these values:
     const name = this.state.name;
     const message = this.state.message;
     const expDate = this.state.expDate;
@@ -71,7 +69,6 @@ class App extends Component {
             <Input type="text" required multiline label="Message" name="message" value={this.state.message} onChange={this.handleChange.bind(this, "message")} maxLength={120} />
             <DatePicker
             label="Expiration Date"
-            // TODO - set today's date as minDate
             onChange={this.handleChange.bind(this, "expDate")}
             value={this.state.expDate}
             sundayFirstDayOfWeek

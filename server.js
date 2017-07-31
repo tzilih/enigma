@@ -1,6 +1,6 @@
-var CryptoJS = require("crypto-js");
-var express = require('express');
-var app = express();
+const CryptoJS = require("crypto-js");
+const express = require('express');
+const app = express();
 
 app.use(express.static('build'));
 app.set('views', './build');
