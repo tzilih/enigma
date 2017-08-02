@@ -45,16 +45,6 @@ class App extends Component {
     this.toggleDialog();
   }
 
-  getFormattedDate() {
-    const selectedDate = new Date(1995, 11, 17);
-    const expDate = new Date(this.state.expDate);
-    const year = expDate.getFullYear();
-    const month = expDate.getMonth() + 1;
-    const day = expDate.getDate();
-    const formattedDate = new Date(year, month, day);
-    return selectedDate;
-  }
-
   dialogActions = [
     { label: "Close", onClick: this.toggleDialog },
     { label: "Decrypt", onClick: this.handleDecrypt }
