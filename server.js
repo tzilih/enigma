@@ -19,6 +19,8 @@ app.get('/decrypt/:passphrase/:message', (req, res) => {
   const decrypted = decrypt(encryptedMessage, passphrase);
   if(decrypted[2].expDate && !hasExpired(decrypted[2].expDate)) {
     res.json({name: decrypted[0].name, message: decrypted[1].message, expDate: decrypted[2].expDate});
+  } else if (!decrypted[2].expDate) {
+    res.json({name: decrypted[0].name, message: decrypted[1].message})
   } else {
       throw 'expired';
   }

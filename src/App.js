@@ -40,16 +40,24 @@ class App extends Component {
         alert('Something went wrong');
       });
     this.toggleDialog();
-  }  
+  }
 
   handleDecrypt = () => {
     const encryptedMessage = this.state.encryptedMessage;
     const uriEncoded = encodeURIComponent(encryptedMessage);
     fetch(`/decrypt/${this.passphrase}/${uriEncoded}`)
       .then(response => response.json())
-      .then(jsonData => this.setState( {errorMessage: jsonData.error, name: jsonData.name, message: jsonData.message, expDate: new Date(jsonData.expDate)} ))
+      .then(
+        jsonData => {
+          if (jsonData.expDate) {
+            this.setState( {errorMessage: jsonData.error, name: jsonData.name, message: jsonData.message, expDate: new Date(jsonData.expDate)} );
+          } else {
+            this.setState( {errorMessage: jsonData.error, name: jsonData.name, message: jsonData.message} );
+          }
+        }
+      )
       .catch(error => {
-        alert("There was an error in getting this message.")
+        document.querySelector('.error').innerHTML = 'There was an error in decrypting this message.';
       });
     this.toggleDialog();
   }
@@ -70,10 +78,6 @@ class App extends Component {
     }
   }
 
-  disableEncrypt = () => {
-    return (!this.state.name || !this.state.message);
-  }
-
   dialogActions = [
     { label: "Close", onClick: this.toggleDialog },
     { label: "Decrypt", onClick: this.handleDecrypt }
@@ -84,6 +88,7 @@ class App extends Component {
       <ThemeProvider theme={theme}>
         <div className="App">
           <div className="Form">
+            <div className="error"></div>
             <Input type="text" required label="Name" name="name" value={this.state.name} onChange={this.handleChange.bind(this, "name")} error={this.state.nameError ? this.state.nameError : ''} onBlur={this.validateName} onKeyUp={this.validateName} />
             <Input type="text" required multiline label="Message" name="message" value={this.state.message} onChange={this.handleChange.bind(this, "message")} maxLength={120} error={this.state.messageError ? this.state.messageError : ''} onBlur={this.validateMessage} onKeyUp={this.validateMessage} />
             <DatePicker
@@ -91,18 +96,18 @@ class App extends Component {
               onChange={this.handleChange.bind(this, "expDate")}
               value={this.state.expDate}
               sundayFirstDayOfWeek
+              minDate={new Date()}
             />
-          <div className="error"></div>
-          <Button label="Encrypt" onClick={this.handleEncrypt} raised disabled={this.disableEncrypt} />
-          <Button label="Decrypt" onClick={this.toggleDialog} raised />
-          <Dialog
-            actions={this.dialogActions}
-            active={this.state.active}
-            onEscKeyDown={this.toggleDialog}
-            onOverlayClick={this.toggleDialog}
-            title="De/Encrypt">
-            <Input type="text" required multiline label="Message" name="encryptedMessage" value={this.state.encryptedMessage} onChange={this.handleChange.bind(this, "encryptedMessage")} />
-          </Dialog>
+            <Button label="Encrypt" onClick={this.handleEncrypt} raised disabled={!this.state.name || !this.state.message} />
+            <Button label="Decrypt" onClick={this.toggleDialog} raised />
+            <Dialog
+              actions={this.dialogActions}
+              active={this.state.active}
+              onEscKeyDown={this.toggleDialog}
+              onOverlayClick={this.toggleDialog}
+              title="De/Encrypt">
+              <Input type="text" required multiline label="Message" name="encryptedMessage" value={this.state.encryptedMessage} onChange={this.handleChange.bind(this, "encryptedMessage")} />
+            </Dialog>
           </div>
           <p>Your Passphrase - {this.passphrase}</p>
           <a href="/new">Generate new Passphrase</a>
