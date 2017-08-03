@@ -9,7 +9,16 @@ import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 
 class App extends Component {
-  state = { name: '', message: '', active: false, encryptedMessage: '', expDate: '', errorMessage: ''};
+  state = {
+    name: '',
+    message: '',
+    active: false,
+    encryptedMessage: '',
+    expDate: '',
+    nameError: '',
+    messageError: ''
+  };
+
   passphrase = (window.location.hash).substring(1);
 
   handleChange = (name, value) => {
@@ -45,6 +54,26 @@ class App extends Component {
     this.toggleDialog();
   }
 
+  validateName = () => {
+    if (this.state.name === '') {
+        this.setState({nameError: "Name is required."});
+    } else {
+        this.setState({nameError: ""});
+    }
+  }
+
+  validateMessage = () => {
+    if (this.state.message === '') {
+        this.setState({messageError: "Message is required."});
+    } else {
+        this.setState({messageError: ""});
+    }
+  }
+
+  disableEncrypt = () => {
+    return (!this.state.name || !this.state.message);
+  }
+
   dialogActions = [
     { label: "Close", onClick: this.toggleDialog },
     { label: "Decrypt", onClick: this.handleDecrypt }
@@ -55,24 +84,24 @@ class App extends Component {
       <ThemeProvider theme={theme}>
         <div className="App">
           <div className="Form">
-            <Input type="text" required label="Name" name="name" value={this.state.name} onChange={this.handleChange.bind(this, "name")}/>
-            <Input type="text" required multiline label="Message" name="message" value={this.state.message} onChange={this.handleChange.bind(this, "message")} maxLength={120} />
+            <Input type="text" required label="Name" name="name" value={this.state.name} onChange={this.handleChange.bind(this, "name")} error={this.state.nameError ? this.state.nameError : ''} onBlur={this.validateName} onKeyUp={this.validateName} />
+            <Input type="text" required multiline label="Message" name="message" value={this.state.message} onChange={this.handleChange.bind(this, "message")} maxLength={120} error={this.state.messageError ? this.state.messageError : ''} onBlur={this.validateMessage} onKeyUp={this.validateMessage} />
             <DatePicker
-            label="Expiration Date"
-            onChange={this.handleChange.bind(this, "expDate")}
-            value={this.state.expDate}
-            sundayFirstDayOfWeek
+              label="Expiration Date"
+              onChange={this.handleChange.bind(this, "expDate")}
+              value={this.state.expDate}
+              sundayFirstDayOfWeek
             />
           <div className="error"></div>
-          <Button label="Encrypt" onClick={this.handleEncrypt} raised/>
-          <Button label="Decrypt" onClick={this.toggleDialog} raised/>
+          <Button label="Encrypt" onClick={this.handleEncrypt} raised disabled={this.disableEncrypt} />
+          <Button label="Decrypt" onClick={this.toggleDialog} raised />
           <Dialog
             actions={this.dialogActions}
             active={this.state.active}
             onEscKeyDown={this.toggleDialog}
             onOverlayClick={this.toggleDialog}
             title="De/Encrypt">
-            <Input type="text" required multiline label="Message" name="encryptedMessage" value={this.state.encryptedMessage} onChange={this.handleChange.bind(this, "encryptedMessage")}/>
+            <Input type="text" required multiline label="Message" name="encryptedMessage" value={this.state.encryptedMessage} onChange={this.handleChange.bind(this, "encryptedMessage")} />
           </Dialog>
           </div>
           <p>Your Passphrase - {this.passphrase}</p>
